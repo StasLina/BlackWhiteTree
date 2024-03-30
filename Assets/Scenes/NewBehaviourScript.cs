@@ -104,7 +104,8 @@ public class NewBehaviourScript : MonoBehaviour
         rb.mass = 80f;
         rb.detectCollisions = true;
         rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        //rb.isKinematic = true;
+        
+        //rb.isKinematic = true;//закоментировать
 
         newObject.tag = "Domino";
         //string path_update_script = "Assets/update.cs"; // Путь к вашему физическому материалу
@@ -119,7 +120,7 @@ public class NewBehaviourScript : MonoBehaviour
     public double ang2 = Math.PI / 6;  //Угол поворота на 30 градусов
 
     Vector3 placementPosition, scale;
-    bool GetDominoTree(double xnew, double ynew, double angle)
+    bool GetDominoTree(double xnew, double ynew, double angle, ref GameObject created_object)
     {
         //Проверка колизии
         GameObject new_object;
@@ -163,15 +164,27 @@ public class NewBehaviourScript : MonoBehaviour
         //new_object.transform.rotation = new Quaternion(0, degrees, 0, 1);//Quaternion.Euler(0, (float)angle, 0);
         //return new_object;
         Physics.Simulate(Time.fixedDeltaTime);
+        created_object = new_object;
         return true;
     }
+    public void StartFirstDomino()
+    {
+        var cur = start_object.transform.eulerAngles;
+        cur.x = 45f;
+        start_object.transform.eulerAngles = cur;
+        var positon = start_object.transform.position;
+        positon.z = -0.35f;
+        positon.y = 1f;
+        start_object.transform.position = positon;
+    }
+    GameObject start_object = null;
 
     public void InitDomino2()
     {
         Physics.autoSimulation = false;
         double xnew = 0, ynew = 0;
-        GameObject newObject;
-        if (GetDominoTree(xnew, ynew, angle))
+        
+        if (GetDominoTree(xnew, ynew, angle, ref start_object))
         {
             DrawTree(xnew, ynew, 200, angle);
         }
@@ -179,7 +192,7 @@ public class NewBehaviourScript : MonoBehaviour
     }
     public int DrawTree(double x, double y, double a, double angle)
     {
-
+        GameObject newObject = null; 
         //GameObject gameObject;
         if (a > 2)
         {
@@ -203,7 +216,7 @@ public class NewBehaviourScript : MonoBehaviour
                 
                 for (int i =0; i < count; ++i)
                 {
-                    if (!GetDominoTree(start_pos.x, start_pos.z, angle))
+                    if (!GetDominoTree(start_pos.x, start_pos.z, angle,ref  newObject))
                     {
                         return 0;
 
@@ -214,7 +227,7 @@ public class NewBehaviourScript : MonoBehaviour
             }
             else
             {
-                if (!GetDominoTree(xnew, ynew, angle))
+                if (!GetDominoTree(xnew, ynew, angle, ref newObject))
                 {
                     return 0;
                 }

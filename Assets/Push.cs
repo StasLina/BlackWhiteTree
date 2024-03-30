@@ -9,10 +9,11 @@ public class Push : MonoBehaviour
     private float _currentPushForce;
     private bool _isPressed;
 
+    NewBehaviourScript d;
     // Start is called before the first frame update
     void Start()
     {
-        NewBehaviourScript d = new NewBehaviourScript();
+        d = new NewBehaviourScript();
         d.InitDomino2();
     }
 
@@ -55,35 +56,41 @@ public class Push : MonoBehaviour
     public float minHeight = 1f; // Минимальная высота камеры
     void Update()
     {
-        Debug.Log(_currentPushForce);
-        if (_isPressed && _currentPushForce <= 60)
-        {
-            _currentPushForce += 2.5f;
-        }
-        if (Input.GetMouseButtonDown(0))
-        {
-            _isPressed = true;
-        }
         if (Input.GetMouseButtonUp(0))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, 100))
-            {
-                GameObject domino = hit.transform.gameObject;
-                if (domino.GetComponent<MeshFilter>().sharedMesh.ToString() == "Cube (UnityEngine.Mesh)")
-                {
-                    Rigidbody domino_rb = domino.GetComponent<Rigidbody>();
-                    Vector3 dir = ray.origin - domino_rb.transform.position;
-                    dir.Normalize();
-                    domino_rb.AddRelativeForce(dir * _currentPushForce, ForceMode.Impulse);
-                }
-            }
-            _currentPushForce = pushForce;
-            _isPressed = false;
+            d.StartFirstDomino();
         }
 
+        //Debug.Log(_currentPushForce);
+        //if (_isPressed && _currentPushForce <= 60)
+        //{
+        //    _currentPushForce += 2.5f;
+        //}
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    _isPressed = true;
+        //}
+        //if (Input.GetMouseButtonUp(0))
+        //{
+        //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //    RaycastHit hit;
+
+        //    if (Physics.Raycast(ray, out hit, 100))
+        //    {
+        //        GameObject domino = hit.transform.gameObject;
+        //        if (domino.GetComponent<MeshFilter>().sharedMesh.ToString() == "Cube (UnityEngine.Mesh)")
+        //        {
+        //            Rigidbody domino_rb = domino.GetComponent<Rigidbody>();
+        //            Vector3 dir = ray.origin - domino_rb.transform.position;
+        //            dir.Normalize();
+        //            domino_rb.AddRelativeForce(dir * _currentPushForce, ForceMode.Impulse);
+        //        }
+        //    }
+        //    _currentPushForce = pushForce;
+        //    _isPressed = false;
+        //}
+
+        /*
         //Двжиение камеры
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
@@ -116,6 +123,6 @@ public class Push : MonoBehaviour
 
         // Ограничение высоты камеры
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, minHeight, maxHeight), transform.position.z);
-
+        //*/
     }
 }
